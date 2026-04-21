@@ -556,7 +556,7 @@
     });
   }, { threshold: 0.08 });
   document.querySelectorAll('.reveal').forEach(r => obs.observe(r));
-  async function handleSubmit(btn) {
+  function handleSubmit(btn) {
     const name    = document.getElementById('fName').value.trim();
     const phone   = document.getElementById('fPhone').value.trim();
     const email   = document.getElementById('fEmail').value.trim();
@@ -570,41 +570,6 @@
       return;
     }
 
-    btn.textContent = 'Sending...';
-    btn.disabled = true;
-    status.textContent = '';
-
-    // ----------------------------------------------------------------
-    // 1. EMAIL via Web3Forms (free at https://web3forms.com)
-    //    Get your free access key, paste it below to activate email.
-    // ----------------------------------------------------------------
-    const WEB3FORMS_KEY = 'YOUR_ACCESS_KEY_HERE';
-    let emailOk = false;
-
-    if (WEB3FORMS_KEY !== 'YOUR_ACCESS_KEY_HERE') {
-      try {
-        const res = await fetch('https://api.web3forms.com/submit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body: JSON.stringify({
-            access_key: WEB3FORMS_KEY,
-            subject: 'New Website Enquiry – BK Engineers',
-            from_name: name,
-            email: email || 'not provided',
-            phone: phone,
-            product: product || 'Not specified',
-            message: message || 'No message',
-            botcheck: ''
-          })
-        });
-        const json = await res.json();
-        emailOk = json.success;
-      } catch(e) { emailOk = false; }
-    }
-
-    // ----------------------------------------------------------------
-    // 2. WHATSAPP – opens pre-filled chat to +91-89689 22599
-    // ----------------------------------------------------------------
     const waMsg = [
       '*New Enquiry – BK Engineers Website*',
       '',
@@ -616,30 +581,21 @@
       '',
       'Sent via bkengineers.in'
     ].join('\n');
+
     window.open('https://wa.me/918968922599?text=' + encodeURIComponent(waMsg), '_blank');
 
-    // ----------------------------------------------------------------
-    // Update UI
-    // ----------------------------------------------------------------
-    btn.textContent = '✓ Enquiry Sent!';
+    btn.textContent = '✓ Sent via WhatsApp!';
     btn.classList.add('sent');
-
-    if (WEB3FORMS_KEY !== 'cdc38393-0555-4d60-b14b-9cfea6a2e7f3') {
-      status.style.color = emailOk ? '#25a368' : '#e0a050';
-      status.textContent = emailOk
-        ? '✓ Email sent to info@bkengineers.in – WhatsApp chat opened!'
-        : '⚠ WhatsApp opened. (Email key not active – check Web3Forms setup.)';
-    } else {
-      status.style.color = '#25a368';
-      status.textContent = '✓ WhatsApp opened with your enquiry! (Add Web3Forms key for email too.)';
-    }
+    btn.disabled = true;
+    status.style.color = '#25a368';
+    status.textContent = '✓ WhatsApp opened with your enquiry details.';
 
     setTimeout(() => {
       btn.textContent = 'Submit Enquiry →';
       btn.classList.remove('sent');
       btn.disabled = false;
       status.textContent = '';
-    }, 8000);
+    }, 6000);
   }
 </script>
 </body>
